@@ -15,6 +15,10 @@ import {
   LogOut,
   Menu,
   X,
+  Shield,
+  CreditCard,
+  BarChart3,
+  UserCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,6 +31,12 @@ const navItems = [
   { href: '/dashboard/inspections', label: 'Inspections', icon: ClipboardCheck },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+];
+
+const adminItems = [
+  { href: '/dashboard/admin/users', label: 'Users', icon: Shield },
+  { href: '/dashboard/admin/billing', label: 'Billing', icon: CreditCard },
+  { href: '/dashboard/admin/stats', label: 'Stats', icon: BarChart3 },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -60,8 +70,31 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </button>
           </div>
 
-          <nav className="flex-1 space-y-1 px-3 py-4">
+          <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
             {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                    isActive
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  )}
+                >
+                  <Icon className={cn('h-5 w-5', isActive ? 'text-blue-600' : 'text-gray-400')} />
+                  {item.label}
+                </Link>
+              );
+            })}
+
+            <div className="mb-2 mt-6 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Admin
+            </div>
+            {adminItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
               return (
@@ -83,7 +116,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </nav>
 
           <div className="border-t p-4">
-            <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50">
+            <div className="mb-3 flex items-center gap-3 px-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                <UserCircle className="h-5 w-5 text-blue-600" />
+              </div>
+              <div className="text-sm">
+                <p className="font-medium text-gray-900">Admin User</p>
+                <p className="text-xs text-gray-500">admin@buildtrack.io</p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                localStorage.removeItem('accessToken');
+                window.location.href = '/login';
+              }}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+            >
               <LogOut className="h-5 w-5" />
               Sign Out
             </button>
@@ -99,7 +147,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
           <div className="flex-1" />
           <div className="flex items-center gap-4">
-            <div className="h-8 w-8 rounded-full bg-blue-600"></div>
+            <div className="h-8 w-8 rounded-full bg-blue-600" />
           </div>
         </div>
         <div className="p-4 lg:p-8">{children}</div>
