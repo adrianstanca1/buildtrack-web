@@ -10,7 +10,7 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   Building2, MapPin, DollarSign, Calendar, ArrowLeft, TrendingUp,
   Users, FileQuestion, FileCheck, Image, Bug, ClipboardList,
-  HardHat, Clock, AlertTriangle, Activity, ShoppingCart, Wrench,
+  HardHat, Clock, AlertTriangle, Activity, ShoppingCart, Wrench, FileText,
 } from 'lucide-react';
 import { ExportTab } from '@/components/projects/ExportTab';
 import Link from 'next/link';
@@ -67,7 +67,7 @@ const typeColors: Record<string, string> = {
   meeting: 'bg-indigo-50',
 };
 
-type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'meetings' | 'purchase-orders' | 'equipment' | 'timeline' | 'exports';
+type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'meetings' | 'purchase-orders' | 'equipment' | 'change-orders' | 'timeline' | 'exports';
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
@@ -162,6 +162,15 @@ export default function ProjectDetailPage() {
     enabled: activeTab === 'equipment',
   });
 
+  const { data: changeOrdersData } = useQuery({
+    queryKey: ['project-change-orders', id],
+    queryFn: async () => {
+      const res = await api.get('/change-orders', { params: { projectId: id } });
+      return res.data.data;
+    },
+    enabled: activeTab === 'change-orders',
+  });
+
   const project: Project = projectData;
   const timeline: TimelineEvent[] = timelineData?.events || [];
   const rfis = rfisData || [];
@@ -172,6 +181,7 @@ export default function ProjectDetailPage() {
   const meetings = meetingsData || [];
   const purchaseOrders = purchaseOrdersData || [];
   const equipment = equipmentData || [];
+  const changeOrders = changeOrdersData || [];
 
   if (!project) {
     return <div className="p-8">Loading...</div>;
@@ -193,6 +203,7 @@ export default function ProjectDetailPage() {
     { key: 'meetings', label: 'Meetings', count: meetings.length },
     { key: 'purchase-orders', label: 'POs', count: purchaseOrders.length },
     { key: 'equipment', label: 'Equipment', count: equipment.length },
+    { key: 'change-orders', label: 'Change Orders', count: changeOrders.length },
     { key: 'timeline', label: 'Timeline', count: timeline.length },
     { key: 'exports', label: 'Exports' },
   ];
@@ -496,6 +507,32 @@ export default function ProjectDetailPage() {
                     <p className="text-sm text-gray-500">{eq.type?.replace('_', ' ')} • {eq.status?.replace('_', ' ')}</p>
                     {eq.serial_number && <p className="text-xs text-gray-400">S/N: {eq.serial_number}</p>}
                     {eq.daily_rate > 0 && <p className="text-xs font-medium text-gray-700">£{eq.daily_rate}/day</p>}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'change-orders' && (
+        <div className="space-y-3">
+          {changeOrders.length === 0 ? (
+            <Card><CardContent className="py-12 text-center text-gray-500">No change orders for this project.</CardContent></Card>
+          ) : changeOrders.map((co: any) => (
+            <Card key={co.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-5 w-5 text-slate-500" />
+                  <div className="flex-1">
+                    <p className="font-medium">{co.co_number} — {co.title}</p>
+                    <p className="text-sm text-gray-500">{co.type?.replace('_', ' ')} • {co.status?.replace('_', ' ')}</p>
+                    {co.impact_cost && co.impact_cost !== 0 && (
+                      <p className="text-xs font-medium">
+                        Impact: {co.impact_cost > 0 ? '+' : ''}£{co.impact_cost.toLocaleString()}
+                      </p>
+                    )}
+                    {co.requested_by && <p className="text-xs text-gray-400">Requested by {co.requested_by}</p>}
                   </div>
                 </div>
               </CardContent>
