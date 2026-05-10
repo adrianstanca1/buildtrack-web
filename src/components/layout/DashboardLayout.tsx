@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Building2, ClipboardList, Users, AlertTriangle,
   ClipboardCheck, Bell, Settings, LogOut, Menu, X, Shield,
-  BarChart3, CreditCard, CalendarDays,
+  BarChart3, CreditCard, CalendarDays, ShoppingCart,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -18,6 +18,7 @@ const navItems = [
   { href: '/dashboard/safety', label: 'Safety', icon: AlertTriangle },
   { href: '/dashboard/inspections', label: 'Inspections', icon: ClipboardCheck },
   { href: '/dashboard/meetings', label: 'Meetings', icon: CalendarDays },
+  { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: ShoppingCart },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];

@@ -10,7 +10,7 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   Building2, MapPin, DollarSign, Calendar, ArrowLeft, TrendingUp,
   Users, FileQuestion, FileCheck, Image, Bug, ClipboardList,
-  HardHat, Clock, AlertTriangle, Activity,
+  HardHat, Clock, AlertTriangle, Activity, ShoppingCart,
 } from 'lucide-react';
 import { ExportTab } from '@/components/projects/ExportTab';
 import Link from 'next/link';
@@ -67,7 +67,7 @@ const typeColors: Record<string, string> = {
   meeting: 'bg-indigo-50',
 };
 
-type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'meetings' | 'timeline' | 'exports';
+type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'meetings' | 'purchase-orders' | 'timeline' | 'exports';
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
@@ -144,6 +144,15 @@ export default function ProjectDetailPage() {
     enabled: activeTab === 'meetings',
   });
 
+  const { data: purchaseOrdersData } = useQuery({
+    queryKey: ['project-purchase-orders', id],
+    queryFn: async () => {
+      const res = await api.get('/purchase-orders', { params: { projectId: id } });
+      return res.data.data;
+    },
+    enabled: activeTab === 'purchase-orders',
+  });
+
   const project: Project = projectData;
   const timeline: TimelineEvent[] = timelineData?.events || [];
   const rfis = rfisData || [];
@@ -152,6 +161,7 @@ export default function ProjectDetailPage() {
   const defects = defectsData || [];
   const dailyReports = dailyReportsData || [];
   const meetings = meetingsData || [];
+  const purchaseOrders = purchaseOrdersData || [];
 
   if (!project) {
     return <div className="p-8">Loading...</div>;
@@ -171,6 +181,7 @@ export default function ProjectDetailPage() {
     { key: 'defects', label: 'Defects', count: defects.length },
     { key: 'daily-reports', label: 'Daily Reports', count: dailyReports.length },
     { key: 'meetings', label: 'Meetings', count: meetings.length },
+    { key: 'purchase-orders', label: 'POs', count: purchaseOrders.length },
     { key: 'timeline', label: 'Timeline', count: timeline.length },
     { key: 'exports', label: 'Exports' },
   ];
@@ -430,6 +441,28 @@ export default function ProjectDetailPage() {
                     <p className="font-medium">{m.title}</p>
                     <p className="text-sm text-gray-500">{m.meeting_type?.replace('_', ' ')} • {m.status}</p>
                     {m.scheduled_at && <p className="text-xs text-gray-400">{new Date(m.scheduled_at).toLocaleString()}</p>}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'purchase-orders' && (
+        <div className="space-y-3">
+          {purchaseOrders.length === 0 ? (
+            <Card><CardContent className="py-12 text-center text-gray-500">No purchase orders for this project.</CardContent></Card>
+          ) : purchaseOrders.map((po: any) => (
+            <Card key={po.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <ShoppingCart className="h-5 w-5 text-emerald-500" />
+                  <div className="flex-1">
+                    <p className="font-medium">{po.po_number} — {po.title}</p>
+                    <p className="text-sm text-gray-500">{po.vendor_name} • {po.status.replace('_', ' ')}</p>
+                    {po.total > 0 && <p className="text-xs font-medium text-gray-700">£{po.total?.toLocaleString?.()}</p>}
+                    {po.delivery_date && <p className="text-xs text-gray-400">Due: {formatDate(po.delivery_date)}</p>}
                   </div>
                 </div>
               </CardContent>
