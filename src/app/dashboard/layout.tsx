@@ -28,6 +28,9 @@ import {
   Receipt,
   FileCheck,
   TrendingUp,
+  CheckSquare,
+  Camera,
+  Timer,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
@@ -47,6 +50,9 @@ const navItems = [
   { href: '/dashboard/rfis', label: 'RFIs', icon: FileQuestion },
   { href: '/dashboard/submittals', label: 'Submittals', icon: FileCheck },
   { href: '/dashboard/drawings', label: 'Drawings', icon: Image },
+  { href: '/dashboard/punch-items', label: 'Punch Items', icon: CheckSquare },
+  { href: '/dashboard/site-photos', label: 'Site Photos', icon: Camera },
+  { href: '/dashboard/delay-notes', label: 'Delay Notes', icon: Timer },
   { href: '/dashboard/invoices', label: 'Invoices', icon: Receipt },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
