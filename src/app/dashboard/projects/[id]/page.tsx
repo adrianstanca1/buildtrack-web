@@ -54,6 +54,7 @@ const typeIcons: Record<string, React.ReactNode> = {
   daily_report: <ClipboardList className="h-4 w-4 text-amber-500" />,
   defect: <Bug className="h-4 w-4 text-red-500" />,
   audit: <Activity className="h-4 w-4 text-gray-500" />,
+  meeting: <Calendar className="h-4 w-4 text-indigo-500" />,
 };
 
 const typeColors: Record<string, string> = {
@@ -63,9 +64,10 @@ const typeColors: Record<string, string> = {
   daily_report: 'bg-amber-50',
   defect: 'bg-red-50',
   audit: 'bg-gray-50',
+  meeting: 'bg-indigo-50',
 };
 
-type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'timeline' | 'exports';
+type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'meetings' | 'timeline' | 'exports';
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
@@ -133,6 +135,15 @@ export default function ProjectDetailPage() {
     enabled: activeTab === 'daily-reports',
   });
 
+  const { data: meetingsData } = useQuery({
+    queryKey: ['project-meetings', id],
+    queryFn: async () => {
+      const res = await api.get('/meetings', { params: { projectId: id } });
+      return res.data.data;
+    },
+    enabled: activeTab === 'meetings',
+  });
+
   const project: Project = projectData;
   const timeline: TimelineEvent[] = timelineData?.events || [];
   const rfis = rfisData || [];
@@ -140,6 +151,7 @@ export default function ProjectDetailPage() {
   const drawings = drawingsData || [];
   const defects = defectsData || [];
   const dailyReports = dailyReportsData || [];
+  const meetings = meetingsData || [];
 
   if (!project) {
     return <div className="p-8">Loading...</div>;
@@ -158,6 +170,7 @@ export default function ProjectDetailPage() {
     { key: 'drawings', label: 'Drawings', count: drawings.length },
     { key: 'defects', label: 'Defects', count: defects.length },
     { key: 'daily-reports', label: 'Daily Reports', count: dailyReports.length },
+    { key: 'meetings', label: 'Meetings', count: meetings.length },
     { key: 'timeline', label: 'Timeline', count: timeline.length },
     { key: 'exports', label: 'Exports' },
   ];
@@ -396,6 +409,27 @@ export default function ProjectDetailPage() {
                     <p className="font-medium">{formatDate(r.report_date)}</p>
                     <p className="text-sm text-gray-500">By {r.submitted_by} • {r.status}</p>
                     {r.work_completed && <p className="text-xs text-gray-400 line-clamp-2">{r.work_completed}</p>}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'meetings' && (
+        <div className="space-y-3">
+          {meetings.length === 0 ? (
+            <Card><CardContent className="py-12 text-center text-gray-500">No meetings for this project.</CardContent></Card>
+          ) : meetings.map((m: any) => (
+            <Card key={m.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <Calendar className="h-5 w-5 text-indigo-500" />
+                  <div className="flex-1">
+                    <p className="font-medium">{m.title}</p>
+                    <p className="text-sm text-gray-500">{m.meeting_type?.replace('_', ' ')} • {m.status}</p>
+                    {m.scheduled_at && <p className="text-xs text-gray-400">{new Date(m.scheduled_at).toLocaleString()}</p>}
                   </div>
                 </div>
               </CardContent>

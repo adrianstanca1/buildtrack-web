@@ -4,20 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard,
-  Building2,
-  ClipboardList,
-  Users,
-  AlertTriangle,
-  ClipboardCheck,
-  Bell,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-  Shield,
-  BarChart3,
-  CreditCard,
+  LayoutDashboard, Building2, ClipboardList, Users, AlertTriangle,
+  ClipboardCheck, Bell, Settings, LogOut, Menu, X, Shield,
+  BarChart3, CreditCard, CalendarDays,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -28,6 +17,7 @@ const navItems = [
   { href: '/dashboard/workers', label: 'Workers', icon: Users },
   { href: '/dashboard/safety', label: 'Safety', icon: AlertTriangle },
   { href: '/dashboard/inspections', label: 'Inspections', icon: ClipboardCheck },
+  { href: '/dashboard/meetings', label: 'Meetings', icon: CalendarDays },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
