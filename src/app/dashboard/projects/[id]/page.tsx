@@ -12,6 +12,7 @@ import {
   Users, FileQuestion, FileCheck, Image, Bug, ClipboardList,
   HardHat, Clock, AlertTriangle, Activity,
 } from 'lucide-react';
+import { ExportTab } from '@/components/projects/ExportTab';
 import Link from 'next/link';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -64,7 +65,7 @@ const typeColors: Record<string, string> = {
   audit: 'bg-gray-50',
 };
 
-type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'timeline';
+type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'timeline' | 'exports';
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
@@ -158,6 +159,7 @@ export default function ProjectDetailPage() {
     { key: 'defects', label: 'Defects', count: defects.length },
     { key: 'daily-reports', label: 'Daily Reports', count: dailyReports.length },
     { key: 'timeline', label: 'Timeline', count: timeline.length },
+    { key: 'exports', label: 'Exports' },
   ];
 
   return (
@@ -424,6 +426,7 @@ export default function ProjectDetailPage() {
           )}
         </div>
       )}
+      {activeTab === 'exports' && <ExportTab projectId={id as string} />}
     </div>
   );
 }
