@@ -6,41 +6,38 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 export const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 });
 
 function isOnline(): boolean {
   return typeof navigator !== 'undefined' ? navigator.onLine : true;
 }
 
-// Request interceptor: attach auth token
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = localStorage.getItem('accessToken');
-  if (token) {
-    config.headers.set('Authorization', `Bearer ${token}`);
-  }
-  return config;
-});
-
 // Response interceptor: token refresh + offline queueing for mutations
+let refreshPromise: Promise<string> | null = null;
+
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     if (!originalRequest) return Promise.reject(error);
 
-    // 1. Token refresh on 401
+    // 1. Token refresh on 401 (using httpOnly cookies — withCredentials)
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+
+      if (!refreshPromise) {
+        refreshPromise = refreshAccessToken();
+      }
+
       try {
-        const refreshResponse = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {}, { withCredentials: true });
-        const newToken = refreshResponse.data.data.accessToken;
-        localStorage.setItem('accessToken', newToken);
-        api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+        const newToken = await refreshPromise;
         originalRequest.headers.set('Authorization', `Bearer ${newToken}`);
         return api(originalRequest);
       } catch {
-        localStorage.removeItem('accessToken');
         if (typeof window !== 'undefined') window.location.href = '/login';
+      } finally {
+        refreshPromise = null;
       }
     }
 
@@ -72,6 +69,11 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+async function refreshAccessToken(): Promise<string> {
+  const res = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {}, { withCredentials: true });
+  return res.data.data.accessToken;
+}
 
 // Replay queued requests when coming back online
 if (typeof window !== 'undefined') {

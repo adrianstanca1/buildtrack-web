@@ -17,7 +17,6 @@ export default function SettingsPage() {
   const logout = useMutation({
     mutationFn: () => api.post('/auth/logout'),
     onSuccess: () => {
-      localStorage.removeItem('accessToken');
       router.push('/login');
     },
   });

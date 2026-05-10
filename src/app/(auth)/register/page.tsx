@@ -27,14 +27,13 @@ export default function RegisterPage() {
     }
     setLoading(true);
     try {
-      const res = await api.post('/auth/register', {
+      await api.post('/auth/register', {
         first_name: firstName,
         last_name: lastName,
         email,
         password,
         company,
       });
-      localStorage.setItem('accessToken', res.data.data.accessToken);
       router.push('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.error?.message || 'Registration failed');
