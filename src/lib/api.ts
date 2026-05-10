@@ -36,6 +36,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch {
         if (typeof window !== 'undefined') window.location.href = '/login';
+        return Promise.reject(error);
       } finally {
         refreshPromise = null;
       }
