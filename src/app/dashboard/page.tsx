@@ -6,6 +6,7 @@ import { StatsCards } from '@/components/dashboard/StatsCards';
 import { ProjectChart } from '@/components/dashboard/ProjectChart';
 import { ActivityFeed } from '@/components/dashboard/ActivityFeed';
 import { RecentTasks } from '@/components/dashboard/RecentTasks';
+import RiskDashboard from '@/components/dashboard/RiskDashboard';
 
 export default function DashboardPage() {
   const { data: stats, isLoading: statsLoading } = useQuery({
@@ -47,6 +48,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <RiskDashboard />
       <StatsCards stats={stats} isLoading={statsLoading} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

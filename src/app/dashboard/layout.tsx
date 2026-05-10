@@ -26,6 +26,8 @@ import {
   FileQuestion,
   Image,
   Receipt,
+  FileCheck,
+  TrendingUp,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
@@ -43,6 +45,7 @@ const navItems = [
   { href: '/dashboard/timesheets', label: 'Timesheets', icon: Clock },
   { href: '/dashboard/daily-reports', label: 'Daily Reports', icon: ClipboardList },
   { href: '/dashboard/rfis', label: 'RFIs', icon: FileQuestion },
+  { href: '/dashboard/submittals', label: 'Submittals', icon: FileCheck },
   { href: '/dashboard/drawings', label: 'Drawings', icon: Image },
   { href: '/dashboard/invoices', label: 'Invoices', icon: Receipt },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
