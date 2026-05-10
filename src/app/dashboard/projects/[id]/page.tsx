@@ -10,7 +10,7 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   Building2, MapPin, DollarSign, Calendar, ArrowLeft, TrendingUp,
   Users, FileQuestion, FileCheck, Image, Bug, ClipboardList,
-  HardHat, Clock, AlertTriangle, Activity, ShoppingCart,
+  HardHat, Clock, AlertTriangle, Activity, ShoppingCart, Wrench,
 } from 'lucide-react';
 import { ExportTab } from '@/components/projects/ExportTab';
 import Link from 'next/link';
@@ -67,7 +67,7 @@ const typeColors: Record<string, string> = {
   meeting: 'bg-indigo-50',
 };
 
-type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'meetings' | 'purchase-orders' | 'timeline' | 'exports';
+type TabKey = 'overview' | 'rfis' | 'submittals' | 'drawings' | 'defects' | 'daily-reports' | 'meetings' | 'purchase-orders' | 'equipment' | 'timeline' | 'exports';
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
@@ -153,6 +153,15 @@ export default function ProjectDetailPage() {
     enabled: activeTab === 'purchase-orders',
   });
 
+  const { data: equipmentData } = useQuery({
+    queryKey: ['project-equipment', id],
+    queryFn: async () => {
+      const res = await api.get('/equipment', { params: { projectId: id } });
+      return res.data.data;
+    },
+    enabled: activeTab === 'equipment',
+  });
+
   const project: Project = projectData;
   const timeline: TimelineEvent[] = timelineData?.events || [];
   const rfis = rfisData || [];
@@ -162,6 +171,7 @@ export default function ProjectDetailPage() {
   const dailyReports = dailyReportsData || [];
   const meetings = meetingsData || [];
   const purchaseOrders = purchaseOrdersData || [];
+  const equipment = equipmentData || [];
 
   if (!project) {
     return <div className="p-8">Loading...</div>;
@@ -182,6 +192,7 @@ export default function ProjectDetailPage() {
     { key: 'daily-reports', label: 'Daily Reports', count: dailyReports.length },
     { key: 'meetings', label: 'Meetings', count: meetings.length },
     { key: 'purchase-orders', label: 'POs', count: purchaseOrders.length },
+    { key: 'equipment', label: 'Equipment', count: equipment.length },
     { key: 'timeline', label: 'Timeline', count: timeline.length },
     { key: 'exports', label: 'Exports' },
   ];
@@ -463,6 +474,28 @@ export default function ProjectDetailPage() {
                     <p className="text-sm text-gray-500">{po.vendor_name} • {po.status.replace('_', ' ')}</p>
                     {po.total > 0 && <p className="text-xs font-medium text-gray-700">£{po.total?.toLocaleString?.()}</p>}
                     {po.delivery_date && <p className="text-xs text-gray-400">Due: {formatDate(po.delivery_date)}</p>}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {activeTab === 'equipment' && (
+        <div className="space-y-3">
+          {equipment.length === 0 ? (
+            <Card><CardContent className="py-12 text-center text-gray-500">No equipment for this project.</CardContent></Card>
+          ) : equipment.map((eq: any) => (
+            <Card key={eq.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <Wrench className="h-5 w-5 text-slate-500" />
+                  <div className="flex-1">
+                    <p className="font-medium">{eq.name}</p>
+                    <p className="text-sm text-gray-500">{eq.type?.replace('_', ' ')} • {eq.status?.replace('_', ' ')}</p>
+                    {eq.serial_number && <p className="text-xs text-gray-400">S/N: {eq.serial_number}</p>}
+                    {eq.daily_rate > 0 && <p className="text-xs font-medium text-gray-700">£{eq.daily_rate}/day</p>}
                   </div>
                 </div>
               </CardContent>
