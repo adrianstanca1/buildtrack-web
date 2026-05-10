@@ -112,27 +112,27 @@ function nowIso(): string {
 // Generic CRUD helpers
 async function getAll<T extends keyof BuildTrackDB>(store: T): Promise<BuildTrackDB[T]['value'][]> {
   const db = await getDB();
-  return db.getAll(store);
+  return db.getAll(store as any);
 }
 
 async function getById<T extends keyof BuildTrackDB>(store: T, id: string): Promise<BuildTrackDB[T]['value'] | undefined> {
   const db = await getDB();
-  return db.get(store, id);
+  return db.get(store as any, id);
 }
 
 async function putRecord<T extends keyof BuildTrackDB>(store: T, value: BuildTrackDB[T]['value']): Promise<void> {
   const db = await getDB();
-  await db.put(store, value);
+  await db.put(store as any, value);
 }
 
 async function deleteRecord<T extends keyof BuildTrackDB>(store: T, id: string): Promise<void> {
   const db = await getDB();
-  await db.delete(store, id);
+  await db.delete(store as any, id);
 }
 
 async function clearStore<T extends keyof BuildTrackDB>(store: T): Promise<void> {
   const db = await getDB();
-  await db.clear(store);
+  await db.clear(store as any);
 }
 
 // Table-specific CRUD

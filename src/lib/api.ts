@@ -54,9 +54,10 @@ api.interceptors.response.use(
         method: method as 'POST' | 'PUT' | 'PATCH' | 'DELETE',
         url: originalRequest.url || '',
         body: originalRequest.data,
-        headers: {
-          ...(originalRequest.headers?.toJSON?.() || {}),
-        },
+        headers: Object.fromEntries(
+          Object.entries(originalRequest.headers?.toJSON?.() || {})
+            .map(([k, v]) => [k, String(v)])
+        ),
       });
       // Return a synthetic success so the UI doesn't crash
       return Promise.resolve({
