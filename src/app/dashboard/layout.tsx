@@ -19,6 +19,9 @@ import {
   CreditCard,
   BarChart3,
   UserCircle,
+  Bug,
+  ShieldCheck,
+  Clock,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
@@ -30,6 +33,9 @@ const navItems = [
   { href: '/dashboard/workers', label: 'Workers', icon: Users },
   { href: '/dashboard/safety', label: 'Safety', icon: AlertTriangle },
   { href: '/dashboard/inspections', label: 'Inspections', icon: ClipboardCheck },
+  { href: '/dashboard/defects', label: 'Defects', icon: Bug },
+  { href: '/dashboard/permits', label: 'Permits', icon: ShieldCheck },
+  { href: '/dashboard/timesheets', label: 'Timesheets', icon: Clock },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
