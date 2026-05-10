@@ -22,6 +22,7 @@ import {
   Bug,
   ShieldCheck,
   Clock,
+  HardHat,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
@@ -31,11 +32,13 @@ const navItems = [
   { href: '/dashboard/projects', label: 'Projects', icon: Building2 },
   { href: '/dashboard/tasks', label: 'Tasks', icon: ClipboardList },
   { href: '/dashboard/workers', label: 'Workers', icon: Users },
+  { href: '/dashboard/team', label: 'Team', icon: HardHat },
   { href: '/dashboard/safety', label: 'Safety', icon: AlertTriangle },
   { href: '/dashboard/inspections', label: 'Inspections', icon: ClipboardCheck },
   { href: '/dashboard/defects', label: 'Defects', icon: Bug },
   { href: '/dashboard/permits', label: 'Permits', icon: ShieldCheck },
   { href: '/dashboard/timesheets', label: 'Timesheets', icon: Clock },
+  { href: '/dashboard/daily-reports', label: 'Daily Reports', icon: ClipboardList },
   { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
