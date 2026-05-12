@@ -52,7 +52,7 @@ function CheckoutForm({ onSuccess, onCancel }: { onSuccess?: () => void; onCance
         <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">{errorMessage}</div>
       )}
       <div className="flex gap-3">
-        <Button type="submit" disabled={!stripe || isSubmitting} isLoading={isSubmitting} className="flex-1">
+        <Button type="submit" disabled={!stripe || isSubmitting} loading={isSubmitting} className="flex-1">
           Pay Now
         </Button>
         <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
@@ -101,7 +101,7 @@ export function EmbeddedCheckout({ invoiceId, amount, currency, onSuccess, onCan
           </div>
         </div>
         {error && <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</div>}
-        <Button onClick={initialise} isLoading={loading} className="w-full">
+        <Button onClick={initialise} loading={loading} className="w-full">
           {loading ? 'Initialising…' : 'Proceed to Payment'}
         </Button>
       </div>
