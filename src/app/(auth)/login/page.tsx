@@ -7,6 +7,10 @@ import { api } from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
+// NB: client components can't export `metadata`. The auth layout
+// (src/app/(auth)/layout.tsx) sets the segment-level title for both
+// /login and /register.
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
