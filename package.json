@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "if command -v pm2 >/dev/null 2>&1 && pm2 describe buildtrack-web >/dev/null 2>&1; then pm2 restart buildtrack-web --update-env && echo 'pm2 buildtrack-web restarted with new build'; else echo 'pm2 buildtrack-web not registered; build complete (no restart needed locally)'; fi",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
