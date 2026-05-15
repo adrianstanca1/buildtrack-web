@@ -41,6 +41,8 @@ const navItems = [
   { href: '/dashboard/tasks', label: 'Tasks', icon: ClipboardList },
   { href: '/dashboard/workers', label: 'Workers', icon: Users },
   { href: '/dashboard/team', label: 'Team', icon: HardHat },
+  { href: '/dashboard/team-members', label: 'Team Members', icon: Users },
+  { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: Receipt },
   { href: '/dashboard/safety', label: 'Safety', icon: AlertTriangle },
   { href: '/dashboard/inspections', label: 'Inspections', icon: ClipboardCheck },
   { href: '/dashboard/defects', label: 'Defects', icon: Bug },
