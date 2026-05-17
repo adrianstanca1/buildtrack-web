@@ -105,7 +105,8 @@ export default function SchedulesPage() {
           {tasks.map((task: ScheduleTask) => {
             const StatusIcon = statusIcons[task.status] || Circle;
             return (
-              <Card key={task.id} className={`transition hover:shadow-md ${task.is_critical_path ? 'border-red-200' : ''}`}>
+              <Link key={task.id} href={`/dashboard/schedules/${task.id}`}>
+              <Card className={`cursor-pointer transition hover:shadow-md ${task.is_critical_path ? 'border-red-200' : ''}`}>
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
@@ -153,6 +154,7 @@ export default function SchedulesPage() {
                   </div>
                 </CardContent>
               </Card>
+              </Link>
             );
           })}
         </div>

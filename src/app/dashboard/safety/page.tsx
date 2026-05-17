@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -74,7 +75,8 @@ export default function SafetyPage() {
           </Card>
         ) : (
           incidents.map((incident: Incident) => (
-            <Card key={incident.id} className="hover:shadow-md transition-shadow">
+            <Link key={incident.id} href={`/dashboard/safety/${incident.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -102,6 +104,7 @@ export default function SafetyPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>
