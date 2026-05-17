@@ -9,7 +9,8 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { formatDate } from '@/lib/utils';
-import { ArrowLeft, Trash2, Save } from 'lucide-react';
+import { ArrowLeft, Trash2, Save, Radio } from 'lucide-react';
+import { subscribeProject, type EventPayload } from '@/lib/realtime';
 
 // Daily report detail + edit + delete.
 //   GET    /api/daily-reports/:id
@@ -61,6 +62,26 @@ export default function DailyReportDetailPage() {
     enabled: !!id,
   });
   const r = q.data?.data;
+  const [liveEvent, setLiveEvent] = useState<EventPayload | null>(null);
+
+  // Real-time subscription on this report's project room — refetch on same-id
+  // events. Note backend emits with entityKey 'dailyReport' (camelCase from
+  // 'daily-report'), so we read ev.dailyReport here.
+  useEffect(() => {
+    const projectId = r?.project_id;
+    if (!projectId) return;
+    return subscribeProject(projectId, (ev) => {
+      const incoming = (ev as any).dailyReport;
+      if (incoming?.id !== id) return;
+      if (ev.type === 'daily-report-deleted') {
+        router.push('/dashboard/daily-reports');
+        return;
+      }
+      setLiveEvent(ev);
+      q.refetch();
+    }, ['daily-report']);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [r?.project_id, id, router]);
 
   useEffect(() => {
     if (!r) return;
@@ -123,7 +144,16 @@ export default function DailyReportDetailPage() {
       </Link>
 
       <div className="flex items-start justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Daily report — {formatDate(r.report_date)}</h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold text-gray-900">Daily report — {formatDate(r.report_date)}</h1>
+          {liveEvent && (
+            <span className="inline-flex items-center gap-1 text-xs text-emerald-700">
+              <Radio className="h-3 w-3 animate-pulse" />
+              Live update: {liveEvent.type.replace('daily-report-', '')} ·{' '}
+              {new Date(liveEvent.at).toLocaleTimeString('en-GB')}
+            </span>
+          )}
+        </div>
         <div className="flex gap-2">
           {!editing && (
             <Button type="button" variant="primary" onClick={() => setEditing(true)}>Edit</Button>

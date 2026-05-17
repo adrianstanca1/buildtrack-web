@@ -9,7 +9,8 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { formatDate } from '@/lib/utils';
-import { ArrowLeft, Trash2, Save } from 'lucide-react';
+import { ArrowLeft, Trash2, Save, Radio } from 'lucide-react';
+import { subscribeProject, type EventPayload } from '@/lib/realtime';
 
 // RFI detail + inline edit + delete + answer.
 //   GET    /api/rfis/:id
@@ -52,6 +53,25 @@ export default function RfiDetailPage() {
     enabled: !!id,
   });
   const rfi = q.data?.data;
+  const [liveEvent, setLiveEvent] = useState<EventPayload | null>(null);
+
+  // Real-time subscription on this RFI's project room — refetch on same-id
+  // events. RFIs have a special 'answered' verb in addition to updated.
+  useEffect(() => {
+    const projectId = rfi?.project_id;
+    if (!projectId) return;
+    return subscribeProject(projectId, (ev) => {
+      const incoming = (ev as any).rfi;
+      if (incoming?.id !== id) return;
+      if (ev.type === 'rfi-deleted') {
+        router.push('/dashboard/rfis');
+        return;
+      }
+      setLiveEvent(ev);
+      q.refetch();
+    }, ['rfi']);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rfi?.project_id, id, router]);
 
   useEffect(() => {
     if (!rfi) return;
@@ -117,7 +137,16 @@ export default function RfiDetailPage() {
       </Link>
 
       <div className="flex items-start justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">{rfi.subject}</h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold text-gray-900">{rfi.subject}</h1>
+          {liveEvent && (
+            <span className="inline-flex items-center gap-1 text-xs text-emerald-700">
+              <Radio className="h-3 w-3 animate-pulse" />
+              Live update: {liveEvent.type.replace('rfi-', '')} ·{' '}
+              {new Date(liveEvent.at).toLocaleTimeString('en-GB')}
+            </span>
+          )}
+        </div>
         <div className="flex gap-2">
           {!editing && (
             <Button type="button" variant="primary" onClick={() => setEditing(true)}>Edit / Answer</Button>

@@ -52,28 +52,51 @@ export function disconnectSocket(): void {
   socketRef = null;
 }
 
-export type TaskEventType = 'task-created' | 'task-updated' | 'task-deleted' | 'task-completed';
+// Supported entity types that emit room events from buildtrack-api.
+// Keep in sync with backend src/utils/realtime.ts:EntityName.
+export type EntityKind =
+  | 'task'
+  | 'defect'
+  | 'rfi'
+  | 'daily-report';
 
-export interface TaskEventPayload {
-  type: TaskEventType;
-  task: Record<string, any>;
+export type EntityVerb = 'created' | 'updated' | 'deleted' | 'completed' | 'answered' | 'closed';
+export type EventType = `${EntityKind}-${EntityVerb}`;
+
+// The payload key matches the entity name converted to camelCase (e.g.
+// 'daily-report' → 'dailyReport'). The server-side emitter builds the
+// payload this way, so we mirror it here.
+export interface EventPayload {
+  type: EventType;
+  // The row, keyed by the entity's camelCase name.
+  [entityKey: string]: unknown;
   at: string;
 }
 
+// Legacy alias kept so older callers (tasks/[id] detail page) compile
+// unchanged — the shape is the same as EventPayload.
+export type TaskEventPayload = EventPayload & { task: Record<string, any> };
+export type TaskEventType = Extract<EventType, `task-${EntityVerb}`>;
+
+const ALL_EVENTS: EventType[] = [
+  'task-created', 'task-updated', 'task-deleted', 'task-completed',
+  'defect-created', 'defect-updated', 'defect-deleted',
+  'rfi-created', 'rfi-updated', 'rfi-deleted', 'rfi-answered',
+  'daily-report-created', 'daily-report-updated', 'daily-report-deleted',
+];
+
 /**
- * Join a project room and subscribe to its task events.
+ * Join a project room and subscribe to its mutation events.
  * Returns a cleanup function that unsubscribes and leaves the room.
  *
- * Usage:
- *   useEffect(() => {
- *     return subscribeProject(projectId, (ev) => {
- *       if (ev.type === 'task-updated') queryClient.invalidateQueries(['tasks']);
- *     });
- *   }, [projectId]);
+ * Pass `kinds` to filter to specific entity types (e.g. on a task
+ * detail page, only listen for 'task' events — defects don't matter
+ * there). Omit `kinds` to receive everything.
  */
 export function subscribeProject(
   projectId: string,
-  handler: (ev: TaskEventPayload) => void,
+  handler: (ev: EventPayload) => void,
+  kinds?: EntityKind[],
 ): () => void {
   const socket = getSocket();
 
@@ -81,20 +104,17 @@ export function subscribeProject(
     socket.emit('join-project', projectId);
   };
 
-  // If already connected, join right away — otherwise wait for the handshake.
   if (socket.connected) onConnect();
   else socket.on('connect', onConnect);
 
-  const events: TaskEventType[] = [
-    'task-created',
-    'task-updated',
-    'task-deleted',
-    'task-completed',
-  ];
-  for (const ev of events) socket.on(ev, handler);
+  const wantedEvents = kinds
+    ? ALL_EVENTS.filter((ev) => kinds.some((k) => ev.startsWith(`${k}-`)))
+    : ALL_EVENTS;
+
+  for (const ev of wantedEvents) socket.on(ev, handler);
 
   return () => {
-    for (const ev of events) socket.off(ev, handler);
+    for (const ev of wantedEvents) socket.off(ev, handler);
     socket.off('connect', onConnect);
     try {
       socket.emit('leave-project', projectId);

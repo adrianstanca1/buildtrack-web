@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { formatDate } from '@/lib/utils';
 import { ArrowLeft, Trash2, CheckCircle2, Save, Radio } from 'lucide-react';
-import { subscribeProject, type TaskEventPayload } from '@/lib/realtime';
+import { subscribeProject, type EventPayload } from '@/lib/realtime';
 
 // Task detail + inline edit + delete + mark-complete.
 //
@@ -54,7 +54,7 @@ export default function TaskDetailPage() {
   });
 
   const task = taskQuery.data?.data;
-  const [liveEvent, setLiveEvent] = useState<TaskEventPayload | null>(null);
+  const [liveEvent, setLiveEvent] = useState<EventPayload | null>(null);
 
   // Real-time subscription: join this task's project room and refetch
   // whenever a task event for THIS task lands. Other tasks in the same
@@ -65,7 +65,8 @@ export default function TaskDetailPage() {
     const projectId = task?.project_id;
     if (!projectId) return;
     return subscribeProject(projectId, (ev) => {
-      if (ev.task?.id !== id) return;
+      const incoming = (ev as any).task;
+      if (incoming?.id !== id) return;
       if (ev.type === 'task-deleted') {
         // Someone else deleted this task — bail back to the list.
         router.push('/dashboard/tasks');
@@ -73,7 +74,7 @@ export default function TaskDetailPage() {
       }
       setLiveEvent(ev);
       taskQuery.refetch();
-    });
+    }, ['task']);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task?.project_id, id, router]);
 
