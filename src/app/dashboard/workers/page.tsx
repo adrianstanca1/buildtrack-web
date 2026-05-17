@@ -47,7 +47,9 @@ export default function WorkersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Workers</h1>
-        <Button><Plus className="mr-2 h-4 w-4" /> Add Worker</Button>
+        <Link href="/dashboard/workers/create">
+          <Button><Plus className="mr-2 h-4 w-4" /> Add Worker</Button>
+        </Link>
       </div>
 
       <Card>

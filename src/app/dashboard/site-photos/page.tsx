@@ -48,7 +48,9 @@ export default function SitePhotosPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Site Photos</h1>
         <Link href="/dashboard/site-photos/upload">
+        <Link href="/dashboard/site-photos/create">
           <Button><Plus className="mr-2 h-4 w-4" /> Upload Photo</Button>
+        </Link>
         </Link>
       </div>
 
