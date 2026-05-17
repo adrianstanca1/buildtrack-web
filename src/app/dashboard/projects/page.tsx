@@ -46,7 +46,7 @@ export default function ProjectsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Projects</h1>
-        <Button><Plus className="mr-2 h-4 w-4" /> New Project</Button>
+        <Link href="/dashboard/projects/create"><Button><Plus className="mr-2 h-4 w-4" /> New Project</Button></Link>
       </div>
 
       <Card>
