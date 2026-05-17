@@ -100,7 +100,8 @@ export default function PurchaseOrdersPage() {
       ) : (
         <div className="space-y-3">
           {orders.map((po: PurchaseOrder) => (
-            <Card key={po.id} className="transition hover:shadow-md">
+            <Link key={po.id} href={`/dashboard/purchase-orders/${po.id}`}>
+            <Card className="cursor-pointer transition hover:shadow-md">
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
@@ -134,6 +135,7 @@ export default function PurchaseOrdersPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))}
         </div>
       )}

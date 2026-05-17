@@ -110,7 +110,8 @@ export default function PunchItemsPage() {
           </Card>
         ) : (
           items.map((item: PunchItem) => (
-            <Card key={item.id} className="hover:shadow-md transition-shadow">
+            <Link key={item.id} href={`/dashboard/punch-items/${item.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div>
@@ -148,6 +149,7 @@ export default function PunchItemsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

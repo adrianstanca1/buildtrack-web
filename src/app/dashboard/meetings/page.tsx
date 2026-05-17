@@ -119,7 +119,8 @@ export default function MeetingsPage() {
       ) : (
         <div className="space-y-3">
           {meetings.map((m: Meeting) => (
-            <Card key={m.id} className="transition hover:shadow-md">
+            <Link key={m.id} href={`/dashboard/meetings/${m.id}`}>
+            <Card className="cursor-pointer transition hover:shadow-md">
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
@@ -163,6 +164,7 @@ export default function MeetingsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))}
         </div>
       )}

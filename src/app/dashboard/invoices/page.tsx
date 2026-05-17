@@ -95,7 +95,8 @@ export default function InvoicesPage() {
           </Card>
         ) : (
           invoices.map((invoice: Invoice) => (
-            <Card key={invoice.id} className="hover:shadow-md transition-shadow">
+            <Link key={invoice.id} href={`/dashboard/invoices/${invoice.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -118,6 +119,7 @@ export default function InvoicesPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

@@ -103,7 +103,8 @@ export default function SubmittalsPage() {
           </Card>
         ) : (
           submittals.map((s: Submittal) => (
-            <Card key={s.id} className="hover:shadow-md transition-shadow">
+            <Link key={s.id} href={`/dashboard/submittals/${s.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -134,6 +135,7 @@ export default function SubmittalsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

@@ -90,7 +90,8 @@ export default function SitePhotosPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {photos.map((photo: SitePhoto) => (
-            <Card key={photo.id} className="overflow-hidden hover:shadow-md transition-shadow">
+            <Link key={photo.id} href={`/dashboard/site-photos/${photo.id}`}>
+            <Card className="cursor-pointer overflow-hidden hover:shadow-md transition-shadow">
               <div className="aspect-square bg-gray-100 flex items-center justify-center">
                 {photo.url ? (
                   <img
@@ -117,6 +118,7 @@ export default function SitePhotosPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))}
         </div>
       )}

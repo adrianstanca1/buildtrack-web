@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -70,7 +71,8 @@ export default function WorkersPage() {
           </Card>
         ) : (
           workers.map((worker: Worker) => (
-            <Card key={worker.id} className="hover:shadow-md transition-shadow">
+            <Link key={worker.id} href={`/dashboard/workers/${worker.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-gray-900">{worker.name}</h3>
@@ -92,6 +94,7 @@ export default function WorkersPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

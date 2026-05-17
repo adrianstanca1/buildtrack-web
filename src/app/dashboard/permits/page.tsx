@@ -99,7 +99,8 @@ export default function PermitsPage() {
           </Card>
         ) : (
           permits.map((permit: Permit) => (
-            <Card key={permit.id} className="hover:shadow-md transition-shadow">
+            <Link key={permit.id} href={`/dashboard/permits/${permit.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div>
@@ -130,6 +131,7 @@ export default function PermitsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

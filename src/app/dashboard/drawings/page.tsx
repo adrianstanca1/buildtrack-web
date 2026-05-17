@@ -91,7 +91,8 @@ export default function DrawingsPage() {
           </Card>
         ) : (
           drawings.map((drawing: Drawing) => (
-            <Card key={drawing.id} className="hover:shadow-md transition-shadow">
+            <Link key={drawing.id} href={`/dashboard/drawings/${drawing.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-gray-900">{drawing.title}</h3>
@@ -108,6 +109,7 @@ export default function DrawingsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

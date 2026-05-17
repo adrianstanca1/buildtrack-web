@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -71,7 +72,8 @@ export default function InspectionsPage() {
           </Card>
         ) : (
           inspections.map((inspection: Inspection) => (
-            <Card key={inspection.id} className="hover:shadow-md transition-shadow">
+            <Link key={inspection.id} href={`/dashboard/inspections/${inspection.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="flex items-start gap-4 p-5">
                 <div className="mt-0.5">{statusIcons[inspection.status] || statusIcons.pending}</div>
                 <div className="flex-1">
@@ -92,6 +94,7 @@ export default function InspectionsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

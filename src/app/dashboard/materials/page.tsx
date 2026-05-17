@@ -115,7 +115,8 @@ export default function MaterialsPage() {
       ) : (
         <div className="space-y-3">
           {materials.map((m: Material) => (
-            <Card key={m.id} className={`transition hover:shadow-md ${isLowStock(m) ? 'border-red-200' : ''}`}>
+            <Link key={m.id} href={`/dashboard/materials/${m.id}`}>
+            <Card className={`cursor-pointer transition hover:shadow-md ${isLowStock(m) ? 'border-red-200' : ''}`}>
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
@@ -152,6 +153,7 @@ export default function MaterialsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))}
         </div>
       )}
