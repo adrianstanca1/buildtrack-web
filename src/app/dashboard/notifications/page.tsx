@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { formatDate } from '@/lib/utils';
 import { Bell, Check, Trash2, CheckCheck } from 'lucide-react';
+import Link from 'next/link';
 
 interface Notification {
   id: string;
@@ -79,7 +80,8 @@ export default function NotificationsPage() {
           </Card>
         ) : (
           notifications.map((notification: Notification) => (
-            <Card key={notification.id} className={notification.read ? 'opacity-60' : ''}>
+            <Link key={notification.id} href={`/dashboard/notifications/${notification.id}`}>
+              <Card className={`${notification.read ? 'opacity-60' : ''} cursor-pointer hover:shadow-md transition-shadow`}>
               <CardContent className="flex items-start justify-between p-5">
                 <div className="flex items-start gap-3">
                   <div className="mt-1">
@@ -117,6 +119,7 @@ export default function NotificationsPage() {
                 </div>
               </CardContent>
             </Card>
+          </Link>
           ))
         )}
       </div>

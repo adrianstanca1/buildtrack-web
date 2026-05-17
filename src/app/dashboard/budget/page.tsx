@@ -172,31 +172,33 @@ export default function BudgetPage() {
       ) : (
         <div className="space-y-3">
           {entries.map((e: CostEntry) => (
-            <Card key={e.id} className="transition hover:shadow-md">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${typeColors[e.entry_type] || 'bg-gray-100 text-gray-700'}`}>
-                        {e.entry_type}
-                      </span>
-                      {e.cost_code && <span className="text-xs text-gray-400">{e.cost_code}</span>}
+            <Link href={`/dashboard/budget/${e.id}`}>
+              <Card key={e.id} className="transition hover:shadow-md cursor-pointer">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${typeColors[e.entry_type] || 'bg-gray-100 text-gray-700'}`}>
+                          {e.entry_type}
+                        </span>
+                        {e.cost_code && <span className="text-xs text-gray-400">{e.cost_code}</span>}
+                      </div>
+                      <h3 className="mt-1 text-lg font-semibold text-gray-900 truncate">{e.description || 'Untitled'}</h3>
+                      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
+                        <span>£{e.amount?.toLocaleString()}</span>
+                        {e.quantity > 0 && <span>{e.quantity} {e.unit}</span>}
+                        {e.vendor && <span>{e.vendor}</span>}
+                        {e.category_name && <span className="text-blue-600">{e.category_name}</span>}
+                        {e.date && <span>{new Date(e.date).toLocaleDateString()}</span>}
+                      </div>
                     </div>
-                    <h3 className="mt-1 text-lg font-semibold text-gray-900 truncate">{e.description || 'Untitled'}</h3>
-                    <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
-                      <span>£{e.amount?.toLocaleString()}</span>
-                      {e.quantity > 0 && <span>{e.quantity} {e.unit}</span>}
-                      {e.vendor && <span>{e.vendor}</span>}
-                      {e.category_name && <span className="text-blue-600">{e.category_name}</span>}
-                      {e.date && <span>{new Date(e.date).toLocaleDateString()}</span>}
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-gray-900">£{e.amount?.toLocaleString()}</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-gray-900">£{e.amount?.toLocaleString()}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       )}

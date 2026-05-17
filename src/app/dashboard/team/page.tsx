@@ -97,7 +97,8 @@ export default function TeamPage() {
           </Card>
         ) : (
           members.map((member: TeamMember) => (
-            <Card key={member.id} className="hover:shadow-md transition-shadow">
+            <Link key={member.id} href={`/dashboard/team/${member.id}`}>
+              <Card className="hover:shadow-md transition-shadow cursor-pointer">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-gray-900">{member.name}</h3>
@@ -140,6 +141,7 @@ export default function TeamPage() {
                 )}
               </CardContent>
             </Card>
+          </Link>
           ))
         )}
       </div>
