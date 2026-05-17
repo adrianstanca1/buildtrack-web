@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -49,7 +50,9 @@ export default function TasksPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Tasks</h1>
-        <Button><Plus className="mr-2 h-4 w-4" /> New Task</Button>
+        <Link href="/dashboard/tasks/create">
+          <Button><Plus className="mr-2 h-4 w-4" /> New Task</Button>
+        </Link>
       </div>
 
       <Card>
@@ -80,24 +83,26 @@ export default function TasksPage() {
           </Card>
         ) : (
           tasks.map((task: Task) => (
-            <Card key={task.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="flex items-start gap-4 p-4">
-                <div className="mt-0.5">{statusIcons[task.status] || statusIcons.pending}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3">
-                    <h3 className="font-medium text-gray-900 truncate">{task.title}</h3>
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${priorityColors[task.priority]}`}>
-                      {task.priority}
-                    </span>
+            <Link key={task.id} href={`/dashboard/tasks/${task.id}`}>
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardContent className="flex items-start gap-4 p-4">
+                  <div className="mt-0.5">{statusIcons[task.status] || statusIcons.pending}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3">
+                      <h3 className="font-medium text-gray-900 truncate">{task.title}</h3>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${priorityColors[task.priority]}`}>
+                        {task.priority}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-gray-500 truncate">{task.description}</p>
+                    <div className="mt-2 flex items-center gap-4 text-xs text-gray-400">
+                      <span>{task.project_name || 'No project'}</span>
+                      {task.due_date && <span>Due {formatDate(task.due_date)}</span>}
+                    </div>
                   </div>
-                  <p className="mt-1 text-sm text-gray-500 truncate">{task.description}</p>
-                  <div className="mt-2 flex items-center gap-4 text-xs text-gray-400">
-                    <span>{task.project_name || 'No project'}</span>
-                    {task.due_date && <span>Due {formatDate(task.due_date)}</span>}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Link>
           ))
         )}
       </div>
