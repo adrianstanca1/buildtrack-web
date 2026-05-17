@@ -9,7 +9,8 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { formatDate } from '@/lib/utils';
-import { ArrowLeft, Trash2, CheckCircle2, Save } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle2, Save, Radio } from 'lucide-react';
+import { subscribeProject, type TaskEventPayload } from '@/lib/realtime';
 
 // Task detail + inline edit + delete + mark-complete.
 //
@@ -53,6 +54,28 @@ export default function TaskDetailPage() {
   });
 
   const task = taskQuery.data?.data;
+  const [liveEvent, setLiveEvent] = useState<TaskEventPayload | null>(null);
+
+  // Real-time subscription: join this task's project room and refetch
+  // whenever a task event for THIS task lands. Other tasks in the same
+  // project are ignored to avoid spurious work. The "Live" pill at the
+  // top right surfaces the most recent event so the user knows the
+  // refresh wasn't a manual reload.
+  useEffect(() => {
+    const projectId = task?.project_id;
+    if (!projectId) return;
+    return subscribeProject(projectId, (ev) => {
+      if (ev.task?.id !== id) return;
+      if (ev.type === 'task-deleted') {
+        // Someone else deleted this task — bail back to the list.
+        router.push('/dashboard/tasks');
+        return;
+      }
+      setLiveEvent(ev);
+      taskQuery.refetch();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task?.project_id, id, router]);
 
   // Hydrate form state from server data on first load and after refetch.
   useEffect(() => {
@@ -137,7 +160,16 @@ export default function TaskDetailPage() {
       </Link>
 
       <div className="flex items-start justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">{task.title}</h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold text-gray-900">{task.title}</h1>
+          {liveEvent && (
+            <span className="inline-flex items-center gap-1 text-xs text-emerald-700">
+              <Radio className="h-3 w-3 animate-pulse" />
+              Live update: {liveEvent.type.replace('task-', '')} ·{' '}
+              {new Date(liveEvent.at).toLocaleTimeString('en-GB')}
+            </span>
+          )}
+        </div>
         <div className="flex gap-2">
           {task.status !== 'completed' && (
             <Button
