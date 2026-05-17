@@ -1,0 +1,11 @@
+# Known false-positives. .next/ build artifacts have been ungitignored;
+# these historical fingerprints remain valid for the existing history scan.
+
+4ba5f6daefd4da634be10a021e2f24951e3528cd:.next/prerender-manifest.json:generic-api-key:370
+4ba5f6daefd4da634be10a021e2f24951e3528cd:.next/prerender-manifest.json:generic-api-key:371
+4ba5f6daefd4da634be10a021e2f24951e3528cd:.next/server/middleware-manifest.json:generic-api-key:23
+4ba5f6daefd4da634be10a021e2f24951e3528cd:.next/server/middleware-manifest.json:generic-api-key:24
+2b21d204d548f8d24b4cb43ee080d105e38e0d2a:.next/prerender-manifest.json:generic-api-key:1
+2b21d204d548f8d24b4cb43ee080d105e38e0d2a:.next/prerender-manifest.json:generic-api-key:1
+2b21d204d548f8d24b4cb43ee080d105e38e0d2a:.next/server/middleware-manifest.json:generic-api-key:22
+2b21d204d548f8d24b4cb43ee080d105e38e0d2a:.next/server/middleware-manifest.json:generic-api-key:23
