@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -20,6 +22,7 @@ interface User {
 }
 
 export default function AdminUsersPage() {
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const { data, isLoading } = useQuery({
     queryKey: ['admin-users', search],
@@ -86,7 +89,11 @@ export default function AdminUsersPage() {
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.id} className="border-b hover:bg-gray-50">
+                  <tr
+                    key={user.id}
+                    onClick={() => router.push(`/dashboard/admin/users/${user.id}`)}
+                    className="cursor-pointer border-b hover:bg-gray-50"
+                  >
                     <td className="px-4 py-3">
                       <div className="font-medium text-gray-900">
                         {user.first_name} {user.last_name}
@@ -119,9 +126,11 @@ export default function AdminUsersPage() {
                       {formatDate(user.created_at)}
                     </td>
                     <td className="px-4 py-3">
-                      <Button variant="ghost" size="sm">
-                        <Shield className="h-4 w-4" />
-                      </Button>
+                      <Link href={`/dashboard/admin/users/${user.id}`} onClick={(e) => e.stopPropagation()}>
+                        <Button variant="ghost" size="sm">
+                          <Shield className="h-4 w-4" />
+                        </Button>
+                      </Link>
                     </td>
                   </tr>
                 ))
