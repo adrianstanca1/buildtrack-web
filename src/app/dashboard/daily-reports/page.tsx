@@ -94,7 +94,8 @@ export default function DailyReportsPage() {
           </Card>
         ) : (
           reports.map((report: DailyReport) => (
-            <Card key={report.id} className="hover:shadow-md transition-shadow">
+            <Link key={report.id} href={`/dashboard/daily-reports/${report.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -135,6 +136,7 @@ export default function DailyReportsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

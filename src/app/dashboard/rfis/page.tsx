@@ -104,7 +104,8 @@ export default function RFIsPage() {
           </Card>
         ) : (
           rfis.map((rfi: RFI) => (
-            <Card key={rfi.id} className="hover:shadow-md transition-shadow">
+            <Link key={rfi.id} href={`/dashboard/rfis/${rfi.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -126,6 +127,7 @@ export default function RFIsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>

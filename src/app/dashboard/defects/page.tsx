@@ -99,7 +99,8 @@ export default function DefectsPage() {
           </Card>
         ) : (
           defects.map((defect: Defect) => (
-            <Card key={defect.id} className="hover:shadow-md transition-shadow">
+            <Link key={defect.id} href={`/dashboard/defects/${defect.id}`}>
+            <Card className="cursor-pointer hover:shadow-md transition-shadow">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div>
@@ -133,6 +134,7 @@ export default function DefectsPage() {
                 </div>
               </CardContent>
             </Card>
+            </Link>
           ))
         )}
       </div>
